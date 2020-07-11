@@ -11,6 +11,16 @@ from ttkthemes import themed_tk as tk
 from mutagen.mp3 import MP3
 from pygame import mixer
 
+from split_audio import Audio
+
+class_names = ["Enojado", "Feliz", "Relajado", "Triste", "Neutral"]
+boolean = {
+    'true': True,
+    'verdadero': True,
+    'false':False,
+    'falso': False
+}
+
 
 class App():
     def __init__(self):
@@ -121,19 +131,57 @@ class App():
         mixer.music.set_volume(0.7)
         self.scale.grid(row=0, column=2, pady=15, padx=30)
 
-        self.confirmButton = ttk.Button(self.root, text="Detectar emociones", command=self.detect).pack()
+        self.detectionframe = Frame(self.root)
+        self.detectionframe.pack(side=BOTTOM)
+        self.confirmButton = ttk.Button(self.detectionframe, text="Detectar emociones", command=self.detect)
+        self.confirmButton.pack()
+        self.infotext = Text(self.detectionframe, height=15, width=30)
+        self.infotext.pack()
+
+        self.paramsframe = Frame(self.root)
+        self.paramsframe.pack()
+        Label(self.paramsframe, text="Duracion ventana [ms]").grid(row=0)
+        Label(self.paramsframe, text="Superposicion [ms]").grid(row=1)
+        Label(self.paramsframe, text="Ignorar cabezera [bool]").grid(row=2)
+        Label(self.paramsframe, text="Duracion de ignorar [ms]").grid(row=3)
+        self.window_entry = Entry(self.paramsframe)
+        self.window_entry.insert(END, '1000')
+        self.overlap_entry = Entry(self.paramsframe)
+        self.overlap_entry.insert(END, '200')
+        self.skip_entry = Entry(self.paramsframe)
+        self.skip_entry.insert(END, 'False')
+        self.time_entry = Entry(self.paramsframe)
+        self.time_entry.insert(END, '0')
+        self.window_entry.grid(row=0, column=1)
+        self.overlap_entry.grid(row=1, column=1)
+        self.skip_entry.grid(row=2, column=1)
+        self.time_entry.grid(row=3, column=1)
 
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.root.mainloop()
 
     def detect(self):
+        window_len = int(self.window_entry.get())
+        overlap = int(self.overlap_entry.get())
+        skip_head = boolean[self.skip_entry.get().lower()]
+        skip_time = int(self.time_entry.get())
         try:
             selected_song = self.playlistbox.curselection()
             selected_song = int(selected_song[0])
             play_it = self.playlist[selected_song]
-            print(play_it)
         except:
-            print("Error, audio no seleccionado")
+            tkinter.messagebox.showerror('Error', 'Error, audio no seleccionado')
+        else:
+            audio = Audio(play_it, window_len, overlap=overlap, skip_head=skip_head, skip_time=skip_time)
+            detections = audio.split_classif()
+            self.infotext.delete(1.0, END)
+            text = ""
+            for index, detection in enumerate(detections):
+                text += "ventana {}\n".format(index)
+                for class_, class_name in zip(detection, class_names):
+                    text += "\t\t{}: {}\n".format(class_name, class_)
+                text += "\n\n"
+            self.infotext.insert(END, text[:-3])
 
     def browse_file(self):
         self.filename_path = filedialog.askopenfilename(initialdir = "/", title = "Seleccionar audio", filetypes = [("Audio files", ".wav")])
@@ -253,9 +301,12 @@ class App():
     def on_closing(self):
         self.stop_music()
         self.root.destroy()
-        self.t1.join() 
-        if self.t1.isAlive(): 
-            print('thread still alive')
+        try:
+            self.t1.join() 
+            if self.t1.isAlive(): 
+                print('thread still alive')
+        except:
+            print('thread not active')
 
 if __name__ == "__main__":
     App()
