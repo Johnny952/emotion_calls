@@ -127,3 +127,9 @@ dmypy.json
 # Dataset folders
 ravdess/
 RAVDESS/
+
+# pyAudioAnalysis
+pyAudioAnalysis/
+models/emotion_clf.joblib 
+test_audios/splits/
+ 
