@@ -118,7 +118,7 @@ def move_meld(audios, folder, labels_path, labels, copy=True):
 def extract_features():
     print("Extracting features")
     ravdess_subdirs = read_filenames(ravdess_name)
-    subdirs = meld_subdirs + ravdess_subdirs
+    subdirs = ravdess_subdirs
 
     for subdir in subdirs:
         print("Processing {}".format(subdir), end='\r')
@@ -152,6 +152,7 @@ def process_meld():
         move_meld(files, data_path, labels_path, l_path, copy=copy_files)
 
 if __name__ == "__main__":
+
     extract_features()
 
     setUp()
@@ -159,5 +160,5 @@ if __name__ == "__main__":
     print("Moving features files of RAVDESS")
     process_ravdess()
 
-    print("\n\nMoving features files of MELD")
-    process_meld()
+    #print("\n\nMoving features files of MELD")
+    #process_meld()
