@@ -76,20 +76,19 @@ def preprocess_audio(audio_dir):
 	os.system('python3 ./pyAudioAnalysis/pyAudioAnalysis/audioAnalysis.py featureExtractionDir -i {} -mw {} -ms {} -sw {} -ss {}'.format(audio_dir, mw, ms, sw, ss))
 	filenames = glob.glob(audio_dir+"/*.npy")
 	df = []
+	seconds = []
 	# Loads each feature matrix, flattens it and stores it alongside corresponding time
 	for filepath_idx in tqdm(range(len(filenames))):
 		filepath = filenames[filepath_idx]
-		second = filepath.split("/")[-1].split(".")[0].split("_")[-1]
 		data = np.load(filepath).flatten()
-		df.append([second,data])
-	df = pd.DataFrame(df,columns=['second','feats']).dropna()
-	# Drops rows with null or infinite values
-	invalid_rows = []
-	for index,row in df.iterrows():
-		feats = np.array(row['feats'])
-		if(not np.all(np.isfinite(feats)) or not np.all(np.isfinite(feats))):
-			invalid_rows.append(index)
-	df = df.drop(invalid_rows)
+		second = int(filepath.split("/")[-1].split(".")[0].split("_")[-1])
+		df.append(data)
+		seconds.append(second)
+	# Drops rows with null values
+	df = pd.DataFrame(df).fillna(0)
+	df["seconds"] = seconds
+	df = df.sort_values(by=["seconds"]).reset_index(drop=True)
+	df = df.drop(["seconds"],axis=1)
 	return df
 
 def predict_audio(preprocessed):
@@ -112,13 +111,9 @@ def predict_audio(preprocessed):
 	clf = load("./models/emotion_clf.joblib")
 	df = preprocessed
 	# Predicts a probability for each emotion in every audio sample
-	predictions = clf.predict_proba(df['feats'].to_list())
-	# Arranges predictions as percentages and includes time relative to general
-	# audio file
-	display_table = pd.DataFrame(predictions, columns = EMOTIONS)*100
+	predictions = clf.predict_proba(df)
+	display_table = pd.DataFrame(predictions)*100
 	display_table = display_table.round(decimals=1)
-	display_table["second"] = list(map(int, df["second"]))
-	display_table = display_table.sort_values(by=["second"]).reset_index(drop=True)
 	return display_table
 
 
@@ -141,7 +136,8 @@ def main(path, display=False):
 	# Predicts emotions for each audio segment
 	table = predict_audio(preprocessed)
 
-	if(display=True):
+	"""
+	if(display==True):
 		# Displays emotions relative to time from audio in path
 		table.iloc[::5,:].plot(x="second", y=EMOTIONS, kind="line",linewidth=2)
 		plt.title("{} emotions".format(path.split("/")[-1].split(".")[0]))
@@ -149,6 +145,7 @@ def main(path, display=False):
 		plt.ylabel("Porcentaje")
 		plt.show()
 	return table
+	"""
 
 
 if __name__ == '__main__':

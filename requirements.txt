@@ -1,3 +1,7 @@
+ttkthemes
+tkinter
+pygame
+mutagen
 actionlib==1.11.13
 angles==1.9.12
 backcall==0.2.0
