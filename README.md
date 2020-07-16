@@ -1,9 +1,10 @@
 # Detección de emociones en frases de actores
-
-Se utilizan dos datasets MELD y RAVDESS
- 
-Son 8 sentimientos a predecir
-
+Entrenado sobre base de datos RAVDESS, predice un total de 4 sentimientos por archivo de audio:<br/>:
+- Enojo
+- Relajo
+- Temor
+- Felicidad
+- Tristeza
 
 ## Configuración del Proyecto
 Clonar repositorio: <br/>
