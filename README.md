@@ -16,11 +16,6 @@ Clonar librería pyAudioAnalysis: <br/>
 Instalar Requerimentos: <br/>
 ``` pip install -r requirements.txt```
 
-Descargar modelo preentrenado (sobre audios divididos en segmentos de 1 segundo) desde el siguiente enlace: <br/>
-https://drive.google.com/file/d/1tyvnYLSFeeG8UBDyF_ZPoHncVtGKxmh1/view?usp=sharing <br/>
-
-Mover modelo descargado a carpeta ``models``
-
 ## Predecicción de sentimientos en archivo de audio
 - Copiar dirección de archivo de audio <br/> 
 - Cambiar código ```detect_emotion.py``` con dirección al archivo de audio <br/>
