@@ -127,7 +127,7 @@ dmypy.json
 # Dataset folders
 ravdess/
 RAVDESS/
-pyAudio/
+pyaudio/
 features_pad/
 features_man/
 
