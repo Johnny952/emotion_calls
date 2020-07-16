@@ -10,16 +10,17 @@ from ttkthemes import themed_tk as tk
 
 from mutagen.mp3 import MP3
 from pygame import mixer
-
 from split_audio import Audio
 
-class_names = ["Enojado", "Feliz", "Relajado", "Triste", "Neutral"]
+class_names = ["Enojado    ", "Relajado   ", "Temeroso   ", "Feliz      ", "Triste     "]
+#class_names = ["Neutral    ", "Relajado   ", "Feliz      ", "Triste     ", "Enojado    ",\
+#               "Temeroso   ", "Disgustado ","Sorprendido"]
 boolean = {
     'true': True,
     'verdadero': True,
     'false':False,
     'falso': False
-}
+}   
 
 
 class App():
@@ -179,7 +180,7 @@ class App():
             for index, detection in enumerate(detections):
                 text += "ventana {}\n".format(index)
                 for class_, class_name in zip(detection, class_names):
-                    text += "\t\t{}: {}\n".format(class_name, class_)
+                    text += "\t  {}: {}%\n".format(class_name, class_)
                 text += "\n\n"
             self.infotext.insert(END, text[:-3])
 

@@ -2,8 +2,7 @@ from pydub import AudioSegment
 import os
 import shutil
 
-from model import classify
-
+from detect_emotion import preprocess_audio, predict_audio
 class Audio:
     def __init__(self, audio_path, window_len, windows_dir='temp', overlap=0, skip_head=False, skip_time=0):
         assert(overlap < window_len)
@@ -27,7 +26,7 @@ class Audio:
         if self.skip_head:
             t += self.skip_time
 
-        while t + self.window_len - self.overlap < len(audio):
+        while t + self.window_len < len(audio): #- self.overlap 
             window = audio[t: t + self.window_len]
             window_name = "{}/{}.wav".format(self.windows_dir, count)
             window.export(window_name, format='wav')
@@ -43,8 +42,9 @@ class Audio:
 
     def classify_windows(self):
         detections = []
-        for audio in self.windows_path:
-            detections.append(classify(audio))
+        preprocessed = preprocess_audio(self.windows_dir)
+        detections = predict_audio(preprocessed)
+        detections = detections.to_numpy()
         return detections
 
     def split_classif(self):
