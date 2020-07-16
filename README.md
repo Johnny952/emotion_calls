@@ -1,5 +1,5 @@
 # Detección de emociones en frases de actores
-Entrenado sobre base de datos RAVDESS, predice un total de 4 sentimientos por archivo de audio:<br/>:
+Entrenado sobre base de datos RAVDESS, predice un total de 4 sentimientos por archivo de audio:<br/>
 - Enojo
 - Relajo
 - Temor
