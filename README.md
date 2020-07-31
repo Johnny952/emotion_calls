@@ -18,7 +18,6 @@ Instalar Requerimentos: <br/>
 ``` pip install -r requirements.txt```
 
 ## Predecicción de sentimientos en archivo de audio
-- Copiar dirección de archivo de audio <br/> 
-- Cambiar código ```detect_emotion.py``` con dirección al archivo de audio <br/>
-- Ejecutar:<br/>
-```python detect_emotion.py```
+- Disponer de un archivo de audio en formato .wav <br/> 
+- Ejecutar: <br/>
+```python __init__.py```
